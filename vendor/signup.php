@@ -28,8 +28,7 @@
         ];
     }
 
-    //echo 'preg_match ' . preg_match($pattern_letters, '4444');
-    if(strlen($password) < 6 || !preg_match($pattern_numbers, $password) || !preg_match($pattern_letters, $password)) {
+     if(strlen($password) < 6 || !preg_match($pattern_numbers, $password) || !preg_match($pattern_letters, $password)) {
         $errors[] = [
             "status" => false,
             "type" => 'password',
