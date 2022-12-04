@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    $json = file_get_contents('data.json');
+    $json = file_get_contents('../data/data.json');
     $jsonArr = json_decode($json, true);
 
     $name = trim($_POST['name']);
@@ -14,9 +14,10 @@
     $confirm_password = trim($_POST['confirm_password']);
     $confirm_password = htmlspecialchars($confirm_password);
 
-    $pattern_name = '/^.*[^A-z].*$/';
+    $pattern_name = '/[^а-яА-ЯёЁa-zA-Z]/';
     $pattern_letters = '/[a-zA-Z]/';
     $pattern_numbers = '/[0-9]/';
+    $pattern_email = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
 
     $errors = [];
 
@@ -28,11 +29,11 @@
         ];
     }
 
-     if(strlen($password) < 6 || !preg_match($pattern_numbers, $password) || !preg_match($pattern_letters, $password)) {
+    if(strlen($password) < 6 || !preg_match($pattern_numbers, $password) || !preg_match($pattern_letters, $password)) {
         $errors[] = [
             "status" => false,
             "type" => 'password',
-            "message" => 'Пароль должен состоять из цифр и букв латинского алфавита и содержать не менее 6 символов'
+            "message" => 'Пароль должен состоять из букв латинского алфавита и цифр и содержать не менее 6 символов'
         ];
     }
 
@@ -59,7 +60,7 @@
         ];
     }
 
-    if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+    if(!preg_match($pattern_email, $email)){
         $errors[] = [
             "status" => false,
             "type" => 'email',
@@ -94,26 +95,27 @@
         die();
     }
 
-    //Проверяем совпадают ли пароли
+    //Проверяем есть ли ошибки в полях и совпадают ли пароли
     if(empty($errors) && $password === $confirm_password){
         $data = array();
+        $s = 'jimk5';
         
         $data['name'] = $name;
         $data['login'] = $login;
         $data['email'] = $email;
-        $data['password'] = md5($password);
+        $data['password'] = md5($password.$s);
         
         //Запись в файл data.json
-        if (file_exists('data.json')){
-            $json = file_get_contents('data.json');
+        if (file_exists('../data/data.json')){
+            $json = file_get_contents('../data/data.json');
             $jsonArray = json_decode($json, true);
             $jsonArray[] = $data;
             $jsonData = json_encode($jsonArray);
-            file_put_contents('data.json', $jsonData);
+            file_put_contents('../data/data.json', $jsonData);
         } else{
             $jsonArray[] = $data;
             $jsonData = json_encode($jsonArray);
-            file_put_contents('data.json', $jsonData);
+            file_put_contents('../data/data.json', $jsonData);
         }
 
         $response = [
