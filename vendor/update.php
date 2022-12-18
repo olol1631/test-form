@@ -3,39 +3,18 @@
 
     $json = file_get_contents('../data/data.json');
     $jsonArr = json_decode($json, true);
-
+    
     $name = trim($_POST['name']);
     $name = htmlspecialchars($name);
     $login = trim($_POST['login']);
     $login = htmlspecialchars($login);
     $email = $_POST['email'];
-    $password = trim($_POST['password']);
-    $password = htmlspecialchars($password);
-    $confirm_password = trim($_POST['confirm_password']);
-    $confirm_password = htmlspecialchars($confirm_password);
 
     $pattern_name = '/[^а-яА-ЯёЁa-zA-Z]/';
-    $pattern_letters = '/[a-zA-Z]/';
-    $pattern_numbers = '/[0-9]/';
     $pattern_email = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
 
     $errors = [];
 
-    if($password !== $confirm_password) {
-        $errors[] = [
-            "status" => false,
-            "type" => 'confirm_password',
-            "message" => 'Пароли не совпадают'
-        ];
-    }
-
-    if(strlen($password) < 6 || !preg_match($pattern_numbers, $password) || !preg_match($pattern_letters, $password)) {
-        $errors[] = [
-            "status" => false,
-            "type" => 'password',
-            "message" => 'Пароль должен состоять из букв латинского алфавита и цифр и содержать не менее 6 символов'
-        ];
-    }
 
     if(mb_strlen($name) < 2) {
         $errors[] = [
@@ -68,11 +47,9 @@
         ];
     }
 
-
-
     //Проверяем есть ли такой логин и email в БД
     for($i = 0; $i < count($jsonArr); $i++){
-        if($jsonArr[$i]['login'] === $login){
+        if($_SESSION["user"]["login"] !== $login && $jsonArr[$i]['login'] === $login){
             $errors[] = [
                 "status" => false,
                 "type" => 'login',
@@ -80,7 +57,7 @@
             ];
             
         } 
-        if($jsonArr[$i]['email'] === $email){
+        if($_SESSION["user"]["email"] !== $email && $jsonArr[$i]['email'] === $email){
             $errors[] = [
                 "status" => false,
                 "type" => 'email',
@@ -95,21 +72,31 @@
         die();
     }
 
-    //Проверяем есть ли ошибки в полях и совпадают ли пароли
-    if(empty($errors) && $password === $confirm_password){
+    //Проверяем есть ли ошибки
+    if(empty($errors)){
         $data = array();
-        $s = 'jimk5';
         
         $data['name'] = $name;
         $data['login'] = $login;
         $data['email'] = $email;
-        $data['password'] = md5($password.$s);
         
-        //Запись в файл data.json
-        $jsonArr[] = $data;
+        //Внести изменения 
+        for($i = 0; $i < count($jsonArr); $i++){
+            if($jsonArr[$i]['login'] === $_SESSION["user"]['login']){
+    
+                $jsonArr[$i]['name'] = $name;
+                $jsonArr[$i]['login'] = $login;
+                $jsonArr[$i]['email'] = $email;
+            }
+        }
+
+        //Записать новые данные в файл data.json
         $jsonData = json_encode($jsonArr);
         file_put_contents('../data/data.json', $jsonData);
         
+        $_SESSION["user"]['name'] = $name;
+        $_SESSION["user"]['login'] = $login;
+        $_SESSION["user"]['email'] = $email;
 
         $response = [
             "status" => true
@@ -118,4 +105,3 @@
 
 
     } 
-    

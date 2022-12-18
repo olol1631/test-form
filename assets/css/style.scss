@@ -31,8 +31,9 @@ body{
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
+    transition: all .3s;
     &:hover{
-        background-color: darken(#5cb95c, 5%) ;
+        background-color: darken(#5cb95c, 5%);
     }
 }
 .error{
@@ -47,16 +48,27 @@ body{
 .content{
     text-align: center;
 }
-.exit{
+.exit, .update-btn, .update-password{
     display: inline-block;
     text-decoration: none;
     background-color: #e0ce6c;
     border: none;
     padding: 10px 25px;
+    margin-bottom: 15px;
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
+    transition: all .3s;
     &:hover{
         background-color: darken(#e0ce6c, 5%) ;
+    }
+}
+.link{
+    color: #a9a9a9;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all .3s;
+    &:hover{
+        color: darken(#a9a9a9, 25%);
     }
 }

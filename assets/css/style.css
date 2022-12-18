@@ -34,6 +34,8 @@ body {
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
+  -webkit-transition: all .3s;
+  transition: all .3s;
 }
 
 .input-submit:hover, .register-btn:hover {
@@ -55,18 +57,33 @@ body {
   text-align: center;
 }
 
-.exit {
+.exit, .update-btn, .update-password {
   display: inline-block;
   text-decoration: none;
   background-color: #e0ce6c;
   border: none;
   padding: 10px 25px;
+  margin-bottom: 15px;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
+  -webkit-transition: all .3s;
+  transition: all .3s;
 }
 
-.exit:hover {
+.exit:hover, .update-btn:hover, .update-password:hover {
   background-color: #dcc757;
+}
+
+.link {
+  color: #a9a9a9;
+  font-size: 13px;
+  text-decoration: none;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+
+.link:hover {
+  color: dimgray;
 }
 /*# sourceMappingURL=style.css.map */

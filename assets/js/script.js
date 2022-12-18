@@ -88,11 +88,7 @@ $(function() {
                     if(data.status){
                         document.location.href = '/';
                     }else{
-                        //console.log(data)
-                        //console.log('data[0]' + data[0]['type'])
                         data.forEach(function(el){
-                            //console.log(el)
-        
                             if(el['type'] === 'login'){
                                 $('.error-login').removeClass('none').text(el['message']);
                             }
@@ -117,6 +113,120 @@ $(function() {
         
         
     })
+
+    //Изменение данных пользователя
+    $('.update-btn').click(function(e){
+        e.preventDefault();
+
+        $('.error').each(function() {
+            $(this).addClass('none');
+        });
+
+        let name = $('input[name="name"]').val();
+        let login = $('input[name="login"]').val();
+        let email = $('input[name="email"]').val();
+
+        console.log(name, login, email)
+
+        let errors = []
+
+        checkName(name, errors)
+        checkLogin(login, errors)
+        checkEmail(email, errors)
+        
+        console.log(errors)
+
+        //Если ошибок нет, отправляем запрос на сервер
+        if(errors.length < 1){
+            $.ajax({
+                url: 'vendor/update.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    name: name,
+                    login: login,
+                    email: email                                
+                },
+                success: function(data){
+                    if(data.status){
+                        document.location.href = '/';
+                    }else{
+                        data.forEach(function(el){
+                            if(el['type'] === 'login'){
+                                $('.error-login').removeClass('none').text(el['message']);
+                            }
+                            if(el['type'] === 'email'){
+                                $('.error-email').removeClass('none').text(el['message']);
+                            
+                            }
+                            if(el['type'] === 'name'){
+                                $('.error-name').removeClass('none').text(el['message']);
+                            }
+        
+                        })
+                    }
+                }
+            })
+        }
+    })
+    //Изменение пароля
+    $('.update-password').click(function(e){
+        e.preventDefault();
+
+        $('.error').each(function() {
+            $(this).addClass('none');
+        });
+
+        let password = $('input[name="password"]').val();
+        let new_password = $('input[name="new_password"]').val();
+        let confirm_password = $('input[name="confirm_password"]').val();
+
+        console.log(password, new_password, confirm_password)
+
+        let errors = []
+        
+        checkConfirmPassword(confirm_password, new_password, errors)
+        checkPassword(new_password, errors)
+
+        console.log(errors)
+
+        //Если ошибок нет, отправляем запрос на сервер
+        if(errors.length < 1){
+            $.ajax({
+                url: 'vendor/update-password.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    password: password,
+                    new_password: new_password,
+                    confirm_password: confirm_password
+                                                  
+                },
+                success: function(data){
+                    if(data.status){
+                        document.location.href = '/';
+                    }else{
+                        data.forEach(function(el){
+                            if(el['type'] === 'old_password'){
+                                $('.old-password').removeClass('none').text(el['message']);
+                            }
+                            if(el['type'] === 'confirm_password'){
+                                $('.error-password').removeClass('none').text(el['message']);
+                            }
+                            if(el['type'] === 'password'){
+                                $('.error-password').removeClass('none').text(el['message']);
+                            }
+        
+                        })
+                    }
+                }
+            })
+        }
+        
+
+    })
+
+    //Функции
     //Проверка имени пользователя
     function checkName(name, errors){
         if(name.match(/[^а-яА-ЯёЁa-zA-Z]/)){
@@ -185,7 +295,7 @@ $(function() {
             $('.error-password').removeClass('none').text('Пароль должен содержать буквы латинского алфавита и цифры');
             errors.push('password')
         }
-        if(password.match(/\[|\]|\\|\^|\$|\.|\||\?|\*|\+|\(|\)/)){
+        if(password.match(/[^a-zA-Z0-9]/)){
             $('.error-password').removeClass('none').text('Пароль не может содержать спецсимволы');
             errors.push('password')
         }

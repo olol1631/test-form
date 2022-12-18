@@ -26,7 +26,9 @@
         $_SESSION["user"] = [
             "name" => $jsonArr[$searchIndex]['name'],
             "login" => $jsonArr[$searchIndex]['login'],
-            "email" => $jsonArr[$searchIndex]['email']
+            "email" => $jsonArr[$searchIndex]['email'],
+            "password" => $jsonArr[$searchIndex]['password']
+
         ];
 
         $response = [

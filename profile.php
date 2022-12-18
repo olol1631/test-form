@@ -23,9 +23,15 @@
 <body>
     <div class="container">
         <div class="content">
-            <p>Здравствуйте, <?php echo $_SESSION["user"]['login']?></p>
-            <p><?php echo $_SESSION["user"]['email']?></p>
+            <p>Здравствуйте, <?php echo $_SESSION["user"]['name']?></p>
+            <p>Ваш логин: <?php echo $_SESSION["user"]['login']?></p>
+            <p>Ваш email: <?php echo $_SESSION["user"]['email']?></p>
             <a class="exit" href="vendor/logout.php">Выйти</a>
+            <br>
+            <a class="link" href="change-profile.php">Редактировать</a> |
+            <a class="link" href="change-password.php">Изменить пароль</a> |
+            <a class="link" href="vendor/delete.php">Удалить</a> 
+            
         </div>
     </div>
 
