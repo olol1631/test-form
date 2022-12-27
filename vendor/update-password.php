@@ -1,6 +1,7 @@
 <?php
     session_start();
-
+    require_once ('user.php');
+    
     $json = file_get_contents('../data/data.json');
     $jsonArr = json_decode($json, true);
     
@@ -37,7 +38,6 @@
         ];
     }
 
-    //print_r($_SESSION["user"]);
     //echo $password;
     if($_SESSION["user"]['password'] !== $password){
         $errors[] = [
@@ -51,34 +51,9 @@
     if(!empty($errors)){
         echo json_encode($errors);
         die();
-    }
-
-
-    if(empty($errors)){
-        $data = array();
-        $s = 'jimk5';
-        
-        $new_password = md5($new_password.$s);
-        
-        //Внести изменения 
-        for($i = 0; $i < count($jsonArr); $i++){
-            if($jsonArr[$i]['login'] === $_SESSION["user"]['login']){
-    
-                $jsonArr[$i]['password'] = $new_password; 
-            }
-        }
-
-        //Записать новые данные в файл data.json
-        $jsonData = json_encode($jsonArr);
-        file_put_contents('../data/data.json', $jsonData);
-        
-        $_SESSION["user"]['password'] = $new_password; 
-
-        $response = [
-            "status" => true
-        ];
-        echo json_encode($response);
-
+    } else {
+        $user = new User();
+        $user->updatePassword($new_password, $jsonArr);
 
     } 
  

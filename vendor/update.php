@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once ('user.php');
 
     $json = file_get_contents('../data/data.json');
     $jsonArr = json_decode($json, true);
@@ -70,38 +71,8 @@
     if(!empty($errors)){
         echo json_encode($errors);
         die();
-    }
-
-    //Проверяем есть ли ошибки
-    if(empty($errors)){
-        $data = array();
+    } else {
+        $user = new User();
+        $user->update($name, $login, $email, $jsonArr);
         
-        $data['name'] = $name;
-        $data['login'] = $login;
-        $data['email'] = $email;
-        
-        //Внести изменения 
-        for($i = 0; $i < count($jsonArr); $i++){
-            if($jsonArr[$i]['login'] === $_SESSION["user"]['login']){
-    
-                $jsonArr[$i]['name'] = $name;
-                $jsonArr[$i]['login'] = $login;
-                $jsonArr[$i]['email'] = $email;
-            }
-        }
-
-        //Записать новые данные в файл data.json
-        $jsonData = json_encode($jsonArr);
-        file_put_contents('../data/data.json', $jsonData);
-        
-        $_SESSION["user"]['name'] = $name;
-        $_SESSION["user"]['login'] = $login;
-        $_SESSION["user"]['email'] = $email;
-
-        $response = [
-            "status" => true
-        ];
-        echo json_encode($response);
-
-
     } 

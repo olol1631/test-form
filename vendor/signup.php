@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once ('user.php');
 
     $json = file_get_contents('../data/data.json');
     $jsonArr = json_decode($json, true);
@@ -97,25 +98,9 @@
 
     //Проверяем есть ли ошибки в полях и совпадают ли пароли
     if(empty($errors) && $password === $confirm_password){
-        $data = array();
-        $s = 'jimk5';
+        $user = new User();
+        $user->signUp($name, $login, $email, $password, $jsonArr);
         
-        $data['name'] = $name;
-        $data['login'] = $login;
-        $data['email'] = $email;
-        $data['password'] = md5($password.$s);
-        
-        //Запись в файл data.json
-        $jsonArr[] = $data;
-        $jsonData = json_encode($jsonArr);
-        file_put_contents('../data/data.json', $jsonData);
-        
-
-        $response = [
-            "status" => true
-        ];
-        echo json_encode($response);
-
 
     } 
     
